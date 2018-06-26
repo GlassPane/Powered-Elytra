@@ -18,7 +18,6 @@ buildscript {
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'com.matthewprenger.cursegradle'
-apply plugin: 'maven-publish'
 
 apply from: 'https://gist.githubusercontent.com/UpcraftLP/0a98a7dfe913bd3e99073efa7ad0353b/raw'
 //Only edit below this line, the above code adds and enables the nessasary things for Forge to be setup.
@@ -46,9 +45,10 @@ compileJava {
 }
 
 repositories {
+
     maven {
         //JEI files
-        //Mantle
+        name = "DVS1 Maven FS"
         url = "http://dvs1.progwml6.com/files/maven"
     }
     maven {
@@ -58,15 +58,26 @@ repositories {
     }
 
     maven {
+        //hwyla
+        name = "TehNut"
+        url = "https://tehnut.info/maven"
+    }
+
+    //local maven, if present
+    mavenLocal()
+
+    maven {
         //fallback for almost everything, this is CurseForge :P
         name = "CurseForge"
-        url = "https://minecraft.curseforge.com/api/maven/"
+        url = "https://minecraft.curseforge.com/api/maven"
     }
 
     maven {
+        //get dependencies from github
         name = "JitPack"
         url = "https://jitpack.io"
     }
+
 }
 
 minecraft {
@@ -121,7 +132,7 @@ task apiJar(type: Jar) {
         project.hasProperty("api_package")
     }
     from sourceSets.api.allJava
-    include findProperty("api_package") + "/**"
+    include new String(findProperty("api_package") + "/**").replace(".", "/")
     from ("LICENSE") {
         include "*"
     }
@@ -211,29 +222,15 @@ if (JavaVersion.current().isJava8Compatible()) {
 
 dependencies {
 
-    //none
+    compile "com.github.UpcraftLP:GlassPane:1.12.2-0.+"
 }
 if(project.hasProperty("api_package")) tasks.build.dependsOn signApiJar
-tasks.build.dependsOn signJar, signJavadocJar, publish
+tasks.build.dependsOn signJar, signJavadocJar
 tasks.curseforge.dependsOn build
 
 artifacts {
     archives apiJar
     archives javadocJar
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact jar
-            artifact apiJar
-            artifact javadocJar
-        }
-    }
-
-    repositories {
-        mavenLocal()
-    }
 }
 
 def curseRelations = {

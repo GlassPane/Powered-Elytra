@@ -19,9 +19,7 @@ import static com.github.upcraftlp.powerelytra.PoweredElytra.*;
         acceptedMinecraftVersions = MCVERSIONS,
         modid = MODID,
         dependencies = DEPENDENCIES,
-        updateJSON = UPDATE_JSON,
-        serverSideOnly = true,
-        acceptableRemoteVersions = "*"
+        updateJSON = UPDATE_JSON
 )
 public class PoweredElytra {
 
@@ -32,7 +30,7 @@ public class PoweredElytra {
     //Meta Information
     public static final String MODNAME = "Powered Elytra";
     public static final String MODID = "power_elytra";
-    public static final String DEPENDENCIES = "";
+    public static final String DEPENDENCIES = "required-after:glasspane";
     public static final String UPDATE_JSON = "@UPDATE_JSON@";
 
     public static final String FINGERPRINT_KEY = "@FINGERPRINTKEY@";
