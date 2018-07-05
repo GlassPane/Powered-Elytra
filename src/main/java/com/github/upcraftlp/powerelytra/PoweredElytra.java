@@ -1,11 +1,15 @@
 package com.github.upcraftlp.powerelytra;
 
+import com.github.upcraftlp.glasspane.api.net.NetworkHandler;
+import com.github.upcraftlp.powerelytra.net.PacketElytraBoostRocket;
+import com.github.upcraftlp.powerelytra.net.PacketElytraStartFlying;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -49,7 +53,8 @@ public class PoweredElytra {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-
+        NetworkHandler.INSTANCE.registerMessage(PacketElytraBoostRocket.class, PacketElytraBoostRocket.class, 0, Side.SERVER);
+        NetworkHandler.INSTANCE.registerMessage(PacketElytraStartFlying.class, PacketElytraStartFlying.class, 1, Side.SERVER);
     }
 
     @Mod.EventHandler
