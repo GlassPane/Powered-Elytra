@@ -1,1 +1,7 @@
 #PARSE_ESCAPES
+
+#Tooltips
+tooltip.power_elytra.elytra_creative=infinite flight, infinite boost!
+tooltip.power_elytra.usageRocket=Usage per rocket: %s
+tooltip.power_elytra.usageTick=Usage per tick: %s
+tooltip.power_elytra.charge=%s/%s FE
