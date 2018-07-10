@@ -53,8 +53,8 @@ public class PoweredElytra {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        NetworkHandler.INSTANCE.registerMessage(PacketElytraBoostRocket.class, PacketElytraBoostRocket.class, 0, Side.SERVER);
-        NetworkHandler.INSTANCE.registerMessage(PacketElytraStartFlying.class, PacketElytraStartFlying.class, 1, Side.SERVER);
+        NetworkHandler.INSTANCE.registerMessage(PacketElytraBoostRocket.class, PacketElytraBoostRocket.class, NetworkHandler.getNextPacketID(), Side.SERVER);
+        NetworkHandler.INSTANCE.registerMessage(PacketElytraStartFlying.class, PacketElytraStartFlying.class, NetworkHandler.getNextPacketID(), Side.SERVER);
     }
 
     @Mod.EventHandler

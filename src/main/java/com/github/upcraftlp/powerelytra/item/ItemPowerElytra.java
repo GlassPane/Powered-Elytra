@@ -1,15 +1,16 @@
 package com.github.upcraftlp.powerelytra.item;
 
 import com.github.upcraftlp.glasspane.api.capability.CapabilityProviderSerializable;
-import com.github.upcraftlp.glasspane.item.ItemBase;
-import com.github.upcraftlp.powerelytra.PoweredElytra;
-import net.minecraft.client.gui.GuiScreen;
+import com.github.upcraftlp.glasspane.item.ItemSkin;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Enchantments;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,7 +19,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -32,7 +32,7 @@ import javax.annotation.Nullable;
 import java.text.NumberFormat;
 import java.util.List;
 
-public class ItemPowerElytra extends ItemBase {
+public class ItemPowerElytra extends ItemSkin {
 
     private final int capacity;
     private final int consumptionPerTick;
@@ -45,8 +45,8 @@ public class ItemPowerElytra extends ItemBase {
         this.consumptionPerRocket = consumptionPerRocket;
         this.setMaxStackSize(1);
         this.setNoRepair();
-        this.addPropertyOverride(new ResourceLocation(PoweredElytra.MODID, "wing_type"), (stack, world, entity) -> 1); //FIXME overrides?!
         this.setHasSubtypes(true);
+        this.setHasAdvancedTooltip(true);
     }
 
     @Override
@@ -127,12 +127,13 @@ public class ItemPowerElytra extends ItemBase {
      * @return how much energy to consume per single booster rocket; only one booster rocket can be spawned per second!
      */
     public int getConsumptionPerRocket(ItemStack stack) {
-        //TODO account for unbreaking enchantment!
-        return this.consumptionPerRocket;
+        int efficiency = EnchantmentHelper.getEnchantmentLevel(Enchantments.EFFICIENCY, stack);
+        return this.consumptionPerRocket - (this.consumptionPerRocket * efficiency / 10);
     }
 
     public int getTickConsumption(ItemStack stack) {
-        return consumptionPerTick;
+        int unbreaking = EnchantmentHelper.getEnchantmentLevel(Enchantments.UNBREAKING, stack);
+        return this.consumptionPerTick -(this.consumptionPerTick * unbreaking / 10);
     }
 
     @Override
@@ -153,18 +154,23 @@ public class ItemPowerElytra extends ItemBase {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+    public void showTooltip(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+        super.showTooltip(stack, worldIn, tooltip, flagIn);
         NumberFormat numberFormatter = NumberFormat.getInstance();
-        tooltip.add(TextFormatting.GRAY.toString() + String.format("%s/%s FE", numberFormatter.format(getCurrentEnergyStored(stack)), numberFormatter.format(getMaxEnergyStored(stack))));
-        if(flagIn.isAdvanced() || GuiScreen.isAltKeyDown()) {
-            tooltip.add(TextFormatting.GRAY.toString() + String.format("Usage per tick: %s", numberFormatter.format(getTickConsumption(stack))));
-            tooltip.add(TextFormatting.GRAY.toString() + String.format("Usage per rocket: %s", numberFormatter.format(getConsumptionPerRocket(stack))));
-        }
+        tooltip.add(TextFormatting.GRAY.toString() + I18n.format("tooltip.power_elytra.charge", numberFormatter.format(getCurrentEnergyStored(stack)), numberFormatter.format(getMaxEnergyStored(stack))));
+    }
+
+    @Override
+    public void showAdvancedTooltip(ItemStack stack, World world, List<String> tooltip) {
+        super.showAdvancedTooltip(stack, world, tooltip);
+        NumberFormat numberFormatter = NumberFormat.getInstance();
+        tooltip.add(TextFormatting.GRAY.toString() + I18n.format("tooltip.power_elytra.usageTick", numberFormatter.format(getTickConsumption(stack))));
+        tooltip.add(TextFormatting.GRAY.toString() + I18n.format("tooltip.power_elytra.usageRocket", numberFormatter.format(getConsumptionPerRocket(stack))));
     }
 
     @Override
     public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
-        //TODO filter enchantments!
+        //TODO filter enchantments! (unbreaking, armor encahntments, efficiency)
         return super.isBookEnchantable(stack, book);
     }
 

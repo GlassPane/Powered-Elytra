@@ -1,5 +1,6 @@
 package com.github.upcraftlp.powerelytra.net;
 
+import com.github.upcraftlp.glasspane.api.net.MessageBase;
 import com.github.upcraftlp.powerelytra.item.ItemPowerElytra;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.item.EntityFireworkRocket;
@@ -16,15 +17,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class PacketElytraBoostRocket implements IMessage, IMessageHandler<PacketElytraBoostRocket, IMessage> {
+public class PacketElytraBoostRocket extends MessageBase implements IMessageHandler<PacketElytraBoostRocket, IMessage> {
 
     private static final Map<UUID, Long> LAST_PRESSES = new HashMap<>();
     public static final Long NETWORK_TIMEOUT = 1000L;
-    private boolean setFlying;
-
-    public PacketElytraBoostRocket() {
-        //NO-OP
-    }
 
     @Override
     public void fromBytes(ByteBuf buf) {

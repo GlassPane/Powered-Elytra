@@ -1,5 +1,6 @@
 package com.github.upcraftlp.powerelytra.item;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,6 +17,7 @@ public class ItemCreativeElytra extends ItemPowerElytra {
     public ItemCreativeElytra() {
         super("creative_elytra", 0, 0, 0);
         this.setHasSubtypes(false);
+        this.setHasAdvancedTooltip(false);
     }
 
     @Override
@@ -32,9 +34,9 @@ public class ItemCreativeElytra extends ItemPowerElytra {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
-        tooltip.add(TextFormatting.DARK_PURPLE.toString() + "infinite flight, infinite boost!");
+    public void showTooltip(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+        //super.showTooltip(stack, worldIn, tooltip, flagIn); //not needed, as we don't want to display FE usage of zero!
+        tooltip.add(TextFormatting.DARK_PURPLE.toString() + TextFormatting.ITALIC.toString() + I18n.format("tooltip.power_elytra.elytra_creative"));
     }
 
     @Override

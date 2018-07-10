@@ -1,5 +1,6 @@
 package com.github.upcraftlp.powerelytra.net;
 
+import com.github.upcraftlp.glasspane.api.net.MessageBase;
 import com.github.upcraftlp.powerelytra.event.ElytraHandler;
 import com.github.upcraftlp.powerelytra.item.ItemPowerElytra;
 import io.netty.buffer.ByteBuf;
@@ -10,20 +11,14 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketElytraStartFlying implements IMessage, IMessageHandler<PacketElytraStartFlying, IMessage> {
-
-    public PacketElytraStartFlying() {
-        //NO-OP
-    }
+public class PacketElytraStartFlying extends MessageBase implements IMessageHandler<PacketElytraStartFlying, IMessage> {
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        //NO-OP
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
-        //NO-OP
     }
 
     @Override
