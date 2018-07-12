@@ -2,6 +2,7 @@ package com.github.upcraftlp.powerelytra.item;
 
 import com.github.upcraftlp.glasspane.api.capability.CapabilityProviderSerializable;
 import com.github.upcraftlp.glasspane.item.ItemSkin;
+import net.minecraft.block.BlockDispenser;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -12,6 +13,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Enchantments;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
@@ -47,6 +49,7 @@ public class ItemPowerElytra extends ItemSkin {
         this.setNoRepair();
         this.setHasSubtypes(true);
         this.setHasAdvancedTooltip(true);
+        BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(this, ItemArmor.DISPENSER_BEHAVIOR);
     }
 
     @Override
