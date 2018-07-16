@@ -7,6 +7,7 @@ import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -172,9 +173,9 @@ public class ItemPowerElytra extends ItemSkin {
     }
 
     @Override
-    public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         //TODO filter enchantments! (unbreaking, armor encahntments, efficiency)
-        return super.isBookEnchantable(stack, book);
+        return super.canApplyAtEnchantingTable(stack, enchantment);
     }
 
     public boolean isUsableElytra(EntityPlayer player, ItemStack stack) {
