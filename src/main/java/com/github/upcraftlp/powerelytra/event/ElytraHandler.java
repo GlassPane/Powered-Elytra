@@ -44,7 +44,7 @@ public class ElytraHandler {
                     if(flag) {
                         if(!player.isCreative() && stack.hasCapability(CapabilityEnergy.ENERGY, null)) {
                             IEnergyStorage battery = stack.getCapability(CapabilityEnergy.ENERGY, null);
-                            battery.extractEnergy(elytra.getTickConsumption(stack), false);
+                            if(battery != null) battery.extractEnergy(elytra.getTickConsumption(stack), false);
                         }
                         player.fallDistance = 0.0F;
                     }

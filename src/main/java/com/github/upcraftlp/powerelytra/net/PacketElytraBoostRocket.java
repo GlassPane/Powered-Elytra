@@ -45,8 +45,10 @@ public class PacketElytraBoostRocket implements IMessageHandler<PacketElytraBoos
                     player.world.spawnEntity(rocket);
                     if(!player.isCreative() && stack.hasCapability(CapabilityEnergy.ENERGY, null)) {
                         IEnergyStorage battery = stack.getCapability(CapabilityEnergy.ENERGY, null);
-                        int toConsume = ((ItemPowerElytra) stack.getItem()).getConsumptionPerRocket(stack);
-                        if(battery.canExtract() && battery.extractEnergy(toConsume, true) >= toConsume) battery.extractEnergy(toConsume, false);
+                        if(battery != null) {
+                            int toConsume = ((ItemPowerElytra) stack.getItem()).getConsumptionPerRocket(stack);
+                            if(battery.canExtract() && battery.extractEnergy(toConsume, true) >= toConsume) battery.extractEnergy(toConsume, false);
+                        }
                     }
                 }
                 LAST_PRESSES.put(player.getUniqueID(), currentTime);

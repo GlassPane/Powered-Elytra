@@ -58,9 +58,9 @@ public class ItemPowerElytra extends ItemSkin {
         if(this.isInCreativeTab(tabs)){
             ItemStack stackFull = new ItemStack(this);
             if(stackFull.hasCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING)){
-                IEnergyStorage storage = stackFull.getCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING);
-                if(storage != null){
-                    storage.receiveEnergy(storage.getMaxEnergyStored(), false);
+                IEnergyStorage battery = stackFull.getCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING);
+                if(battery != null){
+                    battery.receiveEnergy(battery.getMaxEnergyStored(), false);
                     list.add(stackFull);
                 }
             }
@@ -85,16 +85,16 @@ public class ItemPowerElytra extends ItemSkin {
 
     public int getMaxEnergyStored(ItemStack stack) {
         if(stack.hasCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING)) {
-            IEnergyStorage storage = stack.getCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING);
-            return storage.getMaxEnergyStored();
+            IEnergyStorage battery = stack.getCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING);
+            if(battery != null) return battery.getMaxEnergyStored();
         }
         return this.getCapacity();
     }
 
     public int getCurrentEnergyStored(ItemStack stack) {
         if(stack.hasCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING)) {
-            IEnergyStorage storage = stack.getCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING);
-            return storage.getEnergyStored();
+            IEnergyStorage battery = stack.getCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING);
+            if(battery != null) return battery.getEnergyStored();
         }
         return 0;
     }
@@ -149,9 +149,11 @@ public class ItemPowerElytra extends ItemSkin {
     public double getDurabilityForDisplay(ItemStack stack) {
         if(stack.hasCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING)) {
             IEnergyStorage battery = stack.getCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING);
-            double max = battery.getMaxEnergyStored();
-            double difference = max - battery.getEnergyStored();
-            return difference / max;
+            if(battery != null) {
+                double max = battery.getMaxEnergyStored();
+                double difference = max - battery.getEnergyStored();
+                return difference / max;
+            }
         }
         return super.getDurabilityForDisplay(stack);
     }
@@ -182,8 +184,10 @@ public class ItemPowerElytra extends ItemSkin {
         if(player.isCreative()) return true;
         else if(stack.hasCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING)) {
             IEnergyStorage battery = stack.getCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING);
-            int toConsume = this.getTickConsumption(stack);
-            return battery.canExtract() && battery.extractEnergy(toConsume, true) >= toConsume;
+            if(battery != null) {
+                int toConsume = this.getTickConsumption(stack);
+                return battery.canExtract() && battery.extractEnergy(toConsume, true) >= toConsume;
+            }
         }
         return false;
     }
