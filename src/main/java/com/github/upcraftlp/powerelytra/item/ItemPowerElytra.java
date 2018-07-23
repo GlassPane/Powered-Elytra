@@ -158,15 +158,15 @@ public class ItemPowerElytra extends ItemSkin {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void showTooltip(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        super.showTooltip(stack, worldIn, tooltip, flagIn);
+    public void showTooltip(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flag) {
+        super.showTooltip(stack, worldIn, tooltip, flag);
         NumberFormat numberFormatter = NumberFormat.getInstance();
         tooltip.add(TextFormatting.GRAY.toString() + I18n.format("tooltip.power_elytra.charge", numberFormatter.format(getCurrentEnergyStored(stack)), numberFormatter.format(getMaxEnergyStored(stack))));
     }
 
     @Override
-    public void showAdvancedTooltip(ItemStack stack, World world, List<String> tooltip) {
-        super.showAdvancedTooltip(stack, world, tooltip);
+    public void showAdvancedTooltip(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
+        super.showAdvancedTooltip(stack, world, tooltip, flag);
         NumberFormat numberFormatter = NumberFormat.getInstance();
         tooltip.add(TextFormatting.GRAY.toString() + I18n.format("tooltip.power_elytra.usageTick", numberFormatter.format(getTickConsumption(stack))));
         tooltip.add(TextFormatting.GRAY.toString() + I18n.format("tooltip.power_elytra.usageRocket", numberFormatter.format(getConsumptionPerRocket(stack))));

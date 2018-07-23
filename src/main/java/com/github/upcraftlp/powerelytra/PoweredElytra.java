@@ -34,7 +34,7 @@ public class PoweredElytra {
     //Meta Information
     public static final String MODNAME = "Powered Elytra";
     public static final String MODID = "power_elytra";
-    public static final String DEPENDENCIES = "required-after:glasspane";
+    public static final String DEPENDENCIES = "required-after:glasspane"; //TODO add glasspane version when releasing!
     public static final String UPDATE_JSON = "@UPDATE_JSON@";
 
     public static final String FINGERPRINT_KEY = "@FINGERPRINTKEY@";

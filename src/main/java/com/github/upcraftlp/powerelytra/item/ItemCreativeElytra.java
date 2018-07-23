@@ -34,7 +34,7 @@ public class ItemCreativeElytra extends ItemPowerElytra {
     }
 
     @Override
-    public void showTooltip(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+    public void showTooltip(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flag) {
         //super.showTooltip(stack, worldIn, tooltip, flagIn); //not needed, as we don't want to display FE usage of zero!
         tooltip.add(TextFormatting.DARK_PURPLE.toString() + TextFormatting.ITALIC.toString() + I18n.format("tooltip.power_elytra.elytra_creative"));
     }
