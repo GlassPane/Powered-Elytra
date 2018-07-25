@@ -20,16 +20,19 @@ import java.util.List;
 @SideOnly(Side.CLIENT)
 public class ClientProxy implements IProxy {
 
-    @SuppressWarnings("unchecked")
     @Override
     public void postInit(FMLPostInitializationEvent event) {
-        //FIXME register elytra layer for non-player entities as well!
-        //FIXME remove default elytra and cape layers!
-        Minecraft.getMinecraft().getRenderManager().entityRenderMap.entrySet().stream().filter(entry -> entry.getValue() instanceof RenderLivingBase).forEach(entry -> {
-            RenderLivingBase render = (RenderLivingBase) entry.getValue();
-            ((List<LayerRenderer>) ReflectionHelper.getPrivateValue(RenderLivingBase.class, render, "layerRenderers", "field_177097_h")).removeIf(layer -> layer instanceof LayerElytra || layer instanceof LayerCape);
-            render.addLayer(new LayerElytraCustom(render));
-            if(render instanceof RenderPlayer) render.addLayer(new LayerCapeCustom((RenderPlayer) render));
-        });
+        //players
+        Minecraft.getMinecraft().getRenderManager().getSkinMap().values().forEach(ClientProxy::removeAddLayers);
+
+        //other living entities
+        Minecraft.getMinecraft().getRenderManager().entityRenderMap.entrySet().stream().filter(entry -> entry.getValue() instanceof RenderLivingBase).forEach(entry -> removeAddLayers((RenderLivingBase) entry.getValue()));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void removeAddLayers(RenderLivingBase render) {
+        ((List<LayerRenderer>) ReflectionHelper.getPrivateValue(RenderLivingBase.class, render, "layerRenderers", "field_177097_h")).removeIf(layer -> layer instanceof LayerElytra || layer instanceof LayerCape);
+        render.addLayer(new LayerElytraCustom(render));
+        if(render instanceof RenderPlayer) render.addLayer(new LayerCapeCustom((RenderPlayer) render));
     }
 }
