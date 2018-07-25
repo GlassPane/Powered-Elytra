@@ -44,4 +44,8 @@ public class ItemCreativeElytra extends ItemPowerElytra {
         return false;
     }
 
+    @Override
+    public boolean hasEffect(ItemStack stack) {
+        return true;
+    }
 }
