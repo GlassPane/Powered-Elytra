@@ -36,6 +36,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class ItemPowerElytra extends ItemSkin {
 
@@ -205,6 +206,10 @@ public class ItemPowerElytra extends ItemSkin {
         NumberFormat numberFormatter = NumberFormat.getInstance();
         tooltip.add(TextFormatting.GRAY.toString() + I18n.format("tooltip.power_elytra.usageTick", numberFormatter.format(getTickConsumption(stack))));
         tooltip.add(TextFormatting.GRAY.toString() + I18n.format("tooltip.power_elytra.usageRocket", numberFormatter.format(getConsumptionPerRocket(stack))));
+        boolean rocketBoost = canUseRockets(null, stack);
+        boolean energyBoost = canUseRFBoost(null, stack);
+        tooltip.add(TextFormatting.GRAY.toString() + I18n.format("tooltip.power_elytra.canUseRocket", (rocketBoost ? TextFormatting.GREEN : TextFormatting.RED) + I18n.format("tooltip.power_elytra.boolean_" + String.valueOf(rocketBoost).toLowerCase(Locale.ROOT))));
+        tooltip.add(TextFormatting.GRAY.toString() + I18n.format("tooltip.power_elytra.canUseEnergyBoost", (energyBoost ? TextFormatting.GREEN : TextFormatting.RED) + I18n.format("tooltip.power_elytra.boolean_" + String.valueOf(energyBoost).toLowerCase(Locale.ROOT))));
     }
 
     @Override
@@ -236,11 +241,11 @@ public class ItemPowerElytra extends ItemSkin {
         return new ActionResult<>(EnumActionResult.FAIL, itemstack);
     }
 
-    public boolean canUseRockets(EntityPlayer player, ItemStack stack) {
+    public boolean canUseRockets(@Nullable EntityPlayer player, ItemStack stack) {
         return canUseRockets;
     }
 
-    public boolean canUseRFBoost(EntityPlayer player, ItemStack stack) {
+    public boolean canUseRFBoost(@Nullable EntityPlayer player, ItemStack stack) {
         return canUseRFBoost;
     }
 }

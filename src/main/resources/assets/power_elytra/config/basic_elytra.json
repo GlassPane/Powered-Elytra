@@ -5,5 +5,6 @@
     "rf_used_per_boost": 1000,
     "battery_capacity": 288000,
     "can_boost_rockets": true,
-    "can_boost_rf": true
+    "can_boost_rf": true,
+    "texture": "minecraft:textures/entity/elytra.png"
 }
