@@ -31,6 +31,7 @@ public class ClientProxy implements IProxy {
 
     @SuppressWarnings("unchecked")
     private static void removeAddLayers(RenderLivingBase render) {
+        //TODO srg field name needed?
         ((List<LayerRenderer>) ReflectionHelper.getPrivateValue(RenderLivingBase.class, render, "layerRenderers", "field_177097_h")).removeIf(layer -> layer instanceof LayerElytra || layer instanceof LayerCape);
         render.addLayer(new LayerElytraCustom(render));
         if(render instanceof RenderPlayer) render.addLayer(new LayerCapeCustom((RenderPlayer) render));

@@ -14,5 +14,4 @@ tooltip.power_elytra.canUseRocket=Can use Fireworks to boost\: %s
 tooltip.power_elytra.canUseEnergyBoost=Can use Energy to boost\: %s
 
 #Items
-item.power_elytra.basic_elytra.name=Powered Elytra
 item.power_elytra.creative_elytra.name=Creative Elytra

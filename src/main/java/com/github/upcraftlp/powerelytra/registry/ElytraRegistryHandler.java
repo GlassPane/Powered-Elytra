@@ -1,5 +1,7 @@
 package com.github.upcraftlp.powerelytra.registry;
 
+import com.github.upcraftlp.glasspane.client.ClientUtil;
+import com.github.upcraftlp.glasspane.config.Lens;
 import com.github.upcraftlp.glasspane.registry.GlassPaneAutomatedRegistry;
 import com.github.upcraftlp.glasspane.util.JsonUtil;
 import com.github.upcraftlp.powerelytra.PoweredElytra;
@@ -17,6 +19,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,26 +43,37 @@ public class ElytraRegistryHandler {
 
     public static void init(FMLPreInitializationEvent event) {
         File configDir = new File(event.getModConfigurationDirectory(), "glasspanemods/custom_elytra");
-        try {
-            if(!configDir.exists()) {
-                PoweredElytra.getLogger().info("no default elytra config found, creating one!");
-                FileUtils.forceMkdir(configDir);
-                File config = new File(configDir, "basic_elytra.json");
-                FileUtils.copyInputStreamToFile(PowerElytraConfig.ConfigHandler.class.getResourceAsStream("/assets/" + PoweredElytra.MODID + "/config/basic_elytra.json"), config);
+        if(!configDir.exists()) {
+            PoweredElytra.getLogger().info("no default elytra config found, creating one!");
+            File config = new File(configDir, "basic_elytra.json");
+            try(InputStream inputStream = PowerElytraConfig.ConfigHandler.class.getResourceAsStream("/assets/" + PoweredElytra.MODID + "/config/basic_elytra.json")) {
+                FileUtils.copyInputStreamToFile(inputStream, config);
+            } catch(IOException e) {
+                PoweredElytra.getLogger().error("unable to write default config file!", e);
             }
 
-            File[] files = configDir.listFiles((dir, name) -> name.toLowerCase(Locale.ROOT).endsWith(".json"));
-            if(files == null) throw new IOException(configDir.getAbsolutePath() + " does not denote a directory!");
+            if(event.getSide().isClient()) {
+                if(Lens.debugMode) PoweredElytra.getLogger().info("copying default resources...");
+                try(InputStream inputStream0 = PowerElytraConfig.class.getResourceAsStream("/assets/" + PoweredElytra.MODID + "/config/resources/basic_elytra_model.json"); InputStream inputStream1 = PowerElytraConfig.class.getResourceAsStream("/assets/" + PoweredElytra.MODID + "/config/resources/en_us.lang")) {
+                    FileUtils.copyInputStreamToFile(inputStream0, new File(ClientUtil.RESOURCES_DIR, "assets/" + PoweredElytra.MODID + "/models/item/basic_elytra.json"));
+                    FileUtils.copyInputStreamToFile(inputStream1, new File(ClientUtil.RESOURCES_DIR, "assets/" + PoweredElytra.MODID + "/lang/en_us.lang"));
+                } catch(IOException e) {
+                    PoweredElytra.getLogger().error("unable to write default resources!", e);
+                }
+            }
+        }
+
+        File[] files = configDir.listFiles((dir, name) -> name.toLowerCase(Locale.ROOT).endsWith(".json"));
+        if(files != null) {
             Arrays.stream(files).forEach(configFile -> {
                 try {
                     CUSTOM_CONFIGS.add(JsonUtil.GSON.fromJson(new FileReader(configFile), ElytraConfig.class));
                 } catch(FileNotFoundException e) {
-                    PoweredElytra.getLogger().error("unable to read custom elytra config", e);
+                    //should never happen!
+                    e.printStackTrace();
                 }
             });
-        } catch(IOException e) {
-            PoweredElytra.getLogger().error("Exception handling custom config files!", e);
         }
+        else PoweredElytra.getLogger().error("{} does not denote a directory!", configDir.getAbsolutePath());
     }
-
 }
