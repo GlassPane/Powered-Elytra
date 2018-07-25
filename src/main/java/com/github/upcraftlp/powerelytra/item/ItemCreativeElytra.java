@@ -15,7 +15,7 @@ import java.util.List;
 public class ItemCreativeElytra extends ItemPowerElytra {
 
     public ItemCreativeElytra() {
-        super("creative_elytra", 0, 0, 0);
+        super("creative_elytra", null,0, 0, 0);
         this.setHasSubtypes(false);
         this.setHasAdvancedTooltip(false);
     }

@@ -4,9 +4,11 @@ import com.github.upcraftlp.powerelytra.PoweredElytra;
 import com.github.upcraftlp.powerelytra.item.ItemPowerElytra;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemFirework;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -52,5 +54,11 @@ public class ElytraHandler {
                 if(isFlying(player)) setFlying(player, flag);
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void onUseElytra(PlayerInteractEvent.RightClickItem event) {
+        ItemStack chestStack = event.getEntityPlayer().getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+        if(event.getItemStack().getItem() instanceof ItemFirework && chestStack.getItem() instanceof ItemPowerElytra && !((ItemPowerElytra) chestStack.getItem()).canUseRockets(event.getEntityPlayer(), chestStack)) event.setCanceled(true);
     }
 }

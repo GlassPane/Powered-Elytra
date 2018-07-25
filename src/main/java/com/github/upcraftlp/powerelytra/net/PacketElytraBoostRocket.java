@@ -40,7 +40,7 @@ public class PacketElytraBoostRocket implements IMessageHandler<PacketElytraBoos
             long currentTime = System.nanoTime() / 1000000L; //now we have milliseconds
             if(LAST_PRESSES.getOrDefault(player.getUniqueID(), 0L) <= currentTime - NETWORK_TIMEOUT) { //delay: 1 sec = 1000 millis
                 ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-                if(stack.getItem() instanceof ItemPowerElytra) {
+                if(stack.getItem() instanceof ItemPowerElytra && ((ItemPowerElytra) stack.getItem()).canUseRFBoost(player, stack)) {
                     EntityFireworkRocket rocket = new EntityFireworkRocket(player.world, stack, player);
                     player.world.spawnEntity(rocket);
                     if(!player.isCreative() && stack.hasCapability(CapabilityEnergy.ENERGY, null)) {

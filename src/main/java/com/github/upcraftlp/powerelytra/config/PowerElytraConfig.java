@@ -6,7 +6,7 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import static com.github.upcraftlp.powerelytra.PoweredElytra.MODID;
+import static com.github.upcraftlp.powerelytra.PoweredElytra.*;
 
 /**
  * @author UpcraftLP
@@ -14,8 +14,10 @@ import static com.github.upcraftlp.powerelytra.PoweredElytra.MODID;
 @Config(modid = MODID, name = "glasspanemods/PoweredElytra") //--> /config/glasspanemods/PoweredElytra.cfg
 public class PowerElytraConfig {
 
+    //put config values here!
+
     @Mod.EventBusSubscriber(modid = MODID)
-    public static class Handler {
+    public static class ConfigHandler {
 
         @SubscribeEvent
         public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {

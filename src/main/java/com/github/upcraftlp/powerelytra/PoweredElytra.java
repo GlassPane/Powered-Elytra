@@ -1,14 +1,17 @@
 package com.github.upcraftlp.powerelytra;
 
 import com.github.upcraftlp.glasspane.api.net.NetworkHandler;
+import com.github.upcraftlp.glasspane.api.proxy.IProxy;
+import com.github.upcraftlp.powerelytra.init.ElytraContent;
 import com.github.upcraftlp.powerelytra.net.PacketElytraBoostRocket;
 import com.github.upcraftlp.powerelytra.net.PacketElytraStartFlying;
+import com.github.upcraftlp.powerelytra.registry.ElytraRegistryHandler;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,29 +54,25 @@ public class PoweredElytra {
         return debugMode;
     }
 
+    public static final CreativeTabs CREATIVE_TAB = new CreativeTabs(MODID + ".name") {
+        @Override
+        public ItemStack createIcon() {
+            return new ItemStack(ElytraContent.CREATIVE_ELYTRA);
+        }
+    };
+
+    @SidedProxy(clientSide = "com.github.upcraftlp.powerelytra.proxy.ClientProxy", serverSide = "com.github.upcraftlp.powerelytra.proxy.ServerProxy")
+    public static IProxy proxy;
+
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         NetworkHandler.INSTANCE.registerMessage(PacketElytraBoostRocket.class, PacketElytraBoostRocket.class, NetworkHandler.getNextPacketID(), Side.SERVER);
         NetworkHandler.INSTANCE.registerMessage(PacketElytraStartFlying.class, PacketElytraStartFlying.class, NetworkHandler.getNextPacketID(), Side.SERVER);
+        ElytraRegistryHandler.init(event);
     }
 
     @Mod.EventHandler
-    public void init(FMLInitializationEvent event) {
-
-    }
-
-    @Mod.EventHandler
-    public void onServerStarting(FMLServerStartingEvent event) {
-
-    }
-
-    @Mod.EventHandler
-    public void onServerStarted(FMLServerStartedEvent event) {
-
-    }
-
-    @Mod.EventHandler
-    public void onServerStopping(FMLServerStoppingEvent event) {
-
+    public void postInit(FMLPostInitializationEvent event) {
+        proxy.postInit(event);
     }
 }

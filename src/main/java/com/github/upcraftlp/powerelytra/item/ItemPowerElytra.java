@@ -2,7 +2,9 @@ package com.github.upcraftlp.powerelytra.item;
 
 import com.github.upcraftlp.glasspane.api.capability.CapabilityProviderSerializable;
 import com.github.upcraftlp.glasspane.item.ItemSkin;
+import com.github.upcraftlp.powerelytra.PoweredElytra;
 import net.minecraft.block.BlockDispenser;
+import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -37,20 +39,51 @@ import java.util.List;
 
 public class ItemPowerElytra extends ItemSkin {
 
+    @Nullable
+    private final String texture;
     private final int capacity;
     private final int consumptionPerTick;
     private final int consumptionPerRocket;
+    private final boolean canUseRockets;
+    private final boolean canUseRFBoost;
 
-    public ItemPowerElytra(String name, int batteryCapacity, int consumptionPerTick, int consumptionPerRocket) {
+    public ItemPowerElytra(String name, @Nullable String textureName, int batteryCapacity, int consumptionPerTick, int consumptionPerRocket, boolean canUseRockets, boolean canUseRFBoost) {
         super(name);
+        this.texture = textureName;
         this.capacity = batteryCapacity;
         this.consumptionPerTick = consumptionPerTick;
         this.consumptionPerRocket = consumptionPerRocket;
+        this.canUseRockets = canUseRockets;
+        this.canUseRFBoost = canUseRFBoost;
         this.setMaxStackSize(1);
         this.setNoRepair();
         this.setHasSubtypes(true);
         this.setHasAdvancedTooltip(true);
         BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(this, ItemArmor.DISPENSER_BEHAVIOR);
+        this.setCreativeTab(PoweredElytra.CREATIVE_TAB);
+    }
+
+    public ItemPowerElytra(String name, @Nullable String textureName, int batteryCapacity, int consumptionPerTick, int consumptionPerRocket) {
+        this(name, textureName, batteryCapacity, consumptionPerTick, consumptionPerRocket, true, true);
+    }
+
+    /**
+     * used to set a custom model
+     * @return {@code null} to use the default elytra model
+     */
+    @Nullable
+    public ModelBase getElytraModel(EntityLivingBase entity, ItemStack stack) {
+        return null;
+    }
+
+    /**
+     * used to set a custom texture
+     * @return {@code null} to use the default elytra texture
+     */
+    @Nullable
+    @Override
+    public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type) {
+        return this.texture;
     }
 
     @Override
@@ -176,7 +209,7 @@ public class ItemPowerElytra extends ItemSkin {
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        //TODO filter enchantments! (unbreaking, armor encahntments, efficiency)
+        //TODO filter enchantments! (unbreaking, armor enchantments, efficiency)
         return super.canApplyAtEnchantingTable(stack, enchantment);
     }
 
@@ -201,5 +234,13 @@ public class ItemPowerElytra extends ItemSkin {
             return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
         }
         return new ActionResult<>(EnumActionResult.FAIL, itemstack);
+    }
+
+    public boolean canUseRockets(EntityPlayer player, ItemStack stack) {
+        return canUseRockets;
+    }
+
+    public boolean canUseRFBoost(EntityPlayer player, ItemStack stack) {
+        return canUseRFBoost;
     }
 }
