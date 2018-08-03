@@ -28,7 +28,7 @@ import java.util.Locale;
 @Mod.EventBusSubscriber(modid = PoweredElytra.MODID)
 public class ElytraRegistryHandler {
 
-    public static List<ElytraConfig> CUSTOM_CONFIGS = new LinkedList<>();
+    private static List<ElytraConfig> CUSTOM_CONFIGS = new LinkedList<>();
 
     @SubscribeEvent
     public static void onRegisterItems(RegistryEvent.Register<Item> event) {

@@ -103,7 +103,9 @@ minecraft {
     def fingerPrintKey = project.hasProperty('public_key') ? findProperty('public_key').replace(":", "").toLowerCase(Locale.ROOT) : "undefined"
     replace "@FINGERPRINTKEY@", fingerPrintKey
     replace "@UPDATE_JSON@", project.update_json
-    replaceIn project.reference_class
+    replace "required-after:forge", "required-after:forge@[" + project.forge_version + ",)"
+    replace "required-after:glasspane", "required-after:glasspane@[" + project.gp_version + ",)"
+    replaceIn "${project.reference_class}".replace(".", "/")
 
     //auto-configure the run arguments
     if(project.hasProperty('dev_uuid')) {

@@ -2,6 +2,7 @@ package com.github.upcraftlp.powerelytra;
 
 import com.github.upcraftlp.glasspane.api.net.NetworkHandler;
 import com.github.upcraftlp.glasspane.api.proxy.IProxy;
+import com.github.upcraftlp.glasspane.util.ModUpdateHandler;
 import com.github.upcraftlp.powerelytra.init.ElytraContent;
 import com.github.upcraftlp.powerelytra.net.PacketElytraBoostRocket;
 import com.github.upcraftlp.powerelytra.net.PacketElytraStartFlying;
@@ -37,7 +38,7 @@ public class PoweredElytra {
     //Meta Information
     public static final String MODNAME = "Powered Elytra";
     public static final String MODID = "power_elytra";
-    public static final String DEPENDENCIES = "required-after:glasspane"; //TODO add glasspane version when releasing!
+    public static final String DEPENDENCIES = "required-after:glasspane;required-after:forge";
     public static final String UPDATE_JSON = "@UPDATE_JSON@";
 
     public static final String FINGERPRINT_KEY = "@FINGERPRINTKEY@";

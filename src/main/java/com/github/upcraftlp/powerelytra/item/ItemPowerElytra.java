@@ -11,6 +11,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,6 +25,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -39,6 +41,8 @@ import java.util.List;
 import java.util.Locale;
 
 public class ItemPowerElytra extends ItemSkin {
+
+    private static ResourceLocation ELYTRA_SKIN = new ResourceLocation(PoweredElytra.MODID, "elytra_skin");
 
     @Nullable
     private final String texture;
@@ -84,6 +88,8 @@ public class ItemPowerElytra extends ItemSkin {
     @Nullable
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type) {
+        //TODO get some sick ass vanity textures
+        //return stack.hasTagCompound() && stack.getTagCompound().getInteger(ELYTRA_SKIN.toString()) this.texture;
         return this.texture;
     }
 
@@ -214,8 +220,7 @@ public class ItemPowerElytra extends ItemSkin {
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        //TODO filter enchantments! (unbreaking, armor enchantments, efficiency)
-        return super.canApplyAtEnchantingTable(stack, enchantment);
+        return enchantment == Enchantments.EFFICIENCY || enchantment.type == EnumEnchantmentType.ARMOR_CHEST || enchantment.type == EnumEnchantmentType.BREAKABLE || enchantment.type == EnumEnchantmentType.WEARABLE || super.canApplyAtEnchantingTable(stack, enchantment);
     }
 
     public boolean isUsableElytra(EntityPlayer player, ItemStack stack) {
