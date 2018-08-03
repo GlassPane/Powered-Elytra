@@ -66,6 +66,7 @@ public class PoweredElytra {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        ModUpdateHandler.registerMod(MODID);
         NetworkHandler.INSTANCE.registerMessage(PacketElytraBoostRocket.class, PacketElytraBoostRocket.class, NetworkHandler.getNextPacketID(), Side.SERVER);
         NetworkHandler.INSTANCE.registerMessage(PacketElytraStartFlying.class, PacketElytraStartFlying.class, NetworkHandler.getNextPacketID(), Side.SERVER);
         ElytraRegistryHandler.init(event);
