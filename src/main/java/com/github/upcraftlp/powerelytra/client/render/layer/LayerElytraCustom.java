@@ -25,21 +25,20 @@ public class LayerElytraCustom extends LayerElytra {
     }
 
     @Override
-    public void doRenderLayer(EntityLivingBase entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
-    {
+    public void doRenderLayer(EntityLivingBase entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         ItemStack itemstack = entitylivingbaseIn.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
-        if (itemstack.getItem() == Items.ELYTRA || itemstack.getItem() instanceof ItemPowerElytra)
-        {
+        if(itemstack.getItem() == Items.ELYTRA || itemstack.getItem() instanceof ItemPowerElytra) {
             ResourceLocation texture = TEXTURE_ELYTRA;
             String textureName = itemstack.getItem().getArmorTexture(itemstack, entitylivingbaseIn, EntityEquipmentSlot.CHEST, "overlay");
             if(textureName != null) texture = new ResourceLocation(textureName);
             else {
-                if (entitylivingbaseIn instanceof AbstractClientPlayer && itemstack.getItem() == Items.ELYTRA)
-                {
-                    AbstractClientPlayer abstractclientplayer = (AbstractClientPlayer)entitylivingbaseIn;
-                    if (abstractclientplayer.isPlayerInfoSet() && abstractclientplayer.getLocationElytra() != null) texture = abstractclientplayer.getLocationElytra();
-                    else if (abstractclientplayer.hasPlayerInfo() && abstractclientplayer.getLocationCape() != null && abstractclientplayer.isWearing(EnumPlayerModelParts.CAPE)) texture = abstractclientplayer.getLocationCape();
+                if(entitylivingbaseIn instanceof AbstractClientPlayer && itemstack.getItem() == Items.ELYTRA) {
+                    AbstractClientPlayer abstractclientplayer = (AbstractClientPlayer) entitylivingbaseIn;
+                    if(abstractclientplayer.isPlayerInfoSet() && abstractclientplayer.getLocationElytra() != null)
+                        texture = abstractclientplayer.getLocationElytra();
+                    else if(abstractclientplayer.hasPlayerInfo() && abstractclientplayer.getLocationCape() != null && abstractclientplayer.isWearing(EnumPlayerModelParts.CAPE))
+                        texture = abstractclientplayer.getLocationCape();
                 }
             }
 
@@ -51,13 +50,15 @@ public class LayerElytraCustom extends LayerElytra {
                 GlStateManager.translate(0.0F, 0.0F, 0.125F);
                 this.renderPlayer.bindTexture(texture);
                 ModelBase model = null;
-                if(itemstack.getItem() instanceof ItemPowerElytra) model = ((ItemPowerElytra) itemstack.getItem()).getElytraModel(entitylivingbaseIn, itemstack);
+                if(itemstack.getItem() instanceof ItemPowerElytra)
+                    model = ((ItemPowerElytra) itemstack.getItem()).getElytraModel(entitylivingbaseIn, itemstack);
                 if(model == null) model = this.modelElytra;
 
                 model.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entitylivingbaseIn);
                 model.render(entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 
-                if (itemstack.isItemEnchanted()) LayerArmorBase.renderEnchantedGlint(this.renderPlayer, entitylivingbaseIn, model, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
+                if(itemstack.isItemEnchanted())
+                    LayerArmorBase.renderEnchantedGlint(this.renderPlayer, entitylivingbaseIn, model, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
             }
             GlStateManager.disableBlend();
             GlStateManager.popMatrix();
