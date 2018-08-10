@@ -53,6 +53,10 @@ public class ItemPowerElytra extends ItemSkin {
     private final boolean canUseRockets;
     private final boolean canUseRFBoost;
 
+    public ItemPowerElytra(String name, @Nullable String textureName, int batteryCapacity, int consumptionPerTick, int consumptionPerRocket) {
+        this(name, textureName, batteryCapacity, consumptionPerTick, consumptionPerRocket, true, true);
+    }
+
     public ItemPowerElytra(String name, @Nullable String textureName, int batteryCapacity, int consumptionPerTick, int consumptionPerRocket, boolean canUseRockets, boolean canUseRFBoost) {
         super(name);
         this.texture = textureName;
@@ -69,12 +73,9 @@ public class ItemPowerElytra extends ItemSkin {
         this.setCreativeTab(PoweredElytra.CREATIVE_TAB);
     }
 
-    public ItemPowerElytra(String name, @Nullable String textureName, int batteryCapacity, int consumptionPerTick, int consumptionPerRocket) {
-        this(name, textureName, batteryCapacity, consumptionPerTick, consumptionPerRocket, true, true);
-    }
-
     /**
      * used to set a custom model
+     *
      * @return {@code null} to use the default elytra model
      */
     @Nullable
@@ -82,46 +83,12 @@ public class ItemPowerElytra extends ItemSkin {
         return null;
     }
 
-    /**
-     * used to set a custom texture
-     * @return {@code null} to use the default elytra texture
-     */
-    @Nullable
+    @SideOnly(Side.CLIENT)
     @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type) {
-        //TODO get some sick ass vanity textures
-        //return stack.hasTagCompound() && stack.getTagCompound().getInteger(ELYTRA_SKIN.toString()) this.texture;
-        return this.texture;
-    }
-
-    @Override
-    public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list){
-        if(this.isInCreativeTab(tabs)){
-            ItemStack stackFull = new ItemStack(this);
-            if(stackFull.hasCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING)){
-                IEnergyStorage battery = stackFull.getCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING);
-                if(battery != null){
-                    battery.receiveEnergy(battery.getMaxEnergyStored(), false);
-                    list.add(stackFull);
-                }
-            }
-        }
-        super.getSubItems(tabs, list);
-    }
-
-    @Override
-    public boolean isValidArmor(ItemStack stack, EntityEquipmentSlot armorType, Entity entity) {
-        return armorType == EntityEquipmentSlot.CHEST;
-    }
-
-    @Nullable
-    @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable NBTTagCompound nbt) {
-        return new CapabilityProviderSerializable<>(CapabilityEnergy.ENERGY, DEFAULT_FACING, new EnergyStorage(this.getCapacity()));
-    }
-
-    public int getCapacity() {
-        return this.capacity;
+    public void showTooltip(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flag) {
+        super.showTooltip(stack, worldIn, tooltip, flag);
+        NumberFormat numberFormatter = NumberFormat.getInstance();
+        tooltip.add(TextFormatting.GRAY.toString() + I18n.format("tooltip.power_elytra.charge", numberFormatter.format(getCurrentEnergyStored(stack)), numberFormatter.format(getMaxEnergyStored(stack))));
     }
 
     public int getMaxEnergyStored(ItemStack stack) {
@@ -132,41 +99,22 @@ public class ItemPowerElytra extends ItemSkin {
         return this.getCapacity();
     }
 
-    public int getCurrentEnergyStored(ItemStack stack) {
-        if(stack.hasCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING)) {
-            IEnergyStorage battery = stack.getCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING);
-            if(battery != null) return battery.getEnergyStored();
-        }
-        return 0;
-    }
-
     @Override
-    public boolean getShareTag() { //needed to make sure the capabilities stay in sync with the client
-        return true;
+    public void showAdvancedTooltip(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
+        super.showAdvancedTooltip(stack, world, tooltip, flag);
+        NumberFormat numberFormatter = NumberFormat.getInstance();
+        tooltip.add(TextFormatting.GRAY.toString() + I18n.format("tooltip.power_elytra.usageTick", numberFormatter.format(getTickConsumption(stack))));
+        tooltip.add(TextFormatting.GRAY.toString() + I18n.format("tooltip.power_elytra.usageRocket", numberFormatter.format(getConsumptionPerRocket(stack))));
+        boolean rocketBoost = canUseRockets(null, stack);
+        boolean energyBoost = canUseRFBoost(null, stack);
+        tooltip.add(TextFormatting.GRAY.toString() + I18n.format("tooltip.power_elytra.canUseRocket", (rocketBoost ? TextFormatting.GREEN : TextFormatting.RED) + I18n.format("tooltip.power_elytra.boolean_" + String.valueOf(rocketBoost).toLowerCase(Locale.ROOT))));
+        tooltip.add(TextFormatting.GRAY.toString() + I18n.format("tooltip.power_elytra.canUseEnergyBoost", (energyBoost ? TextFormatting.GREEN : TextFormatting.RED) + I18n.format("tooltip.power_elytra.boolean_" + String.valueOf(energyBoost).toLowerCase(Locale.ROOT))));
     }
 
-    @Nullable
-    @Override
-    public NBTTagCompound getNBTShareTag(ItemStack stack) {
-        stack.setTagInfo("sync_elytra_energy", new NBTTagInt(getCurrentEnergyStored(stack))); //trick MC into sending the stack capabilities to the client!
-        return super.getNBTShareTag(stack);
+    public int getTickConsumption(ItemStack stack) {
+        int unbreaking = EnchantmentHelper.getEnchantmentLevel(Enchantments.UNBREAKING, stack);
+        return this.consumptionPerTick - (this.consumptionPerTick * unbreaking / 10);
     }
-
-    @Nullable
-    @Override
-    public EntityEquipmentSlot getEquipmentSlot(ItemStack stack) {
-        return EntityEquipmentSlot.CHEST;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Nullable
-    @Override
-    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default) {
-        return super.getArmorModel(entityLiving, itemStack, armorSlot, _default);
-        //TODO add custom elytra model
-    }
-
-
 
     /**
      * @return how much energy to consume per single booster rocket; only one booster rocket can be spawned per second!
@@ -176,9 +124,94 @@ public class ItemPowerElytra extends ItemSkin {
         return this.consumptionPerRocket - (this.consumptionPerRocket * efficiency / 10);
     }
 
-    public int getTickConsumption(ItemStack stack) {
-        int unbreaking = EnchantmentHelper.getEnchantmentLevel(Enchantments.UNBREAKING, stack);
-        return this.consumptionPerTick -(this.consumptionPerTick * unbreaking / 10);
+    public boolean canUseRockets(@Nullable EntityPlayer player, ItemStack stack) {
+        return canUseRockets;
+    }
+
+    public boolean canUseRFBoost(@Nullable EntityPlayer player, ItemStack stack) {
+        return canUseRFBoost;
+    }
+
+    public boolean isUsableElytra(EntityPlayer player, ItemStack stack) {
+        if(player.isCreative()) return true;
+        else if(stack.hasCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING)) {
+            IEnergyStorage battery = stack.getCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING);
+            if(battery != null) {
+                int toConsume = this.getTickConsumption(stack);
+                return battery.canExtract() && battery.extractEnergy(toConsume, true) >= toConsume;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
+        ItemStack itemstack = playerIn.getHeldItem(handIn);
+        if(playerIn.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty()) { //player is not wearing a chestpiece
+            playerIn.setItemStackToSlot(EntityEquipmentSlot.CHEST, itemstack.copy());
+            itemstack.setCount(0);
+            return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
+        }
+        return new ActionResult<>(EnumActionResult.FAIL, itemstack);
+    }
+
+    @Override
+    public boolean getShareTag() { //needed to make sure the capabilities stay in sync with the client
+        return true;
+    }
+
+    @Override
+    public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list) {
+        if(this.isInCreativeTab(tabs)) {
+            ItemStack stackFull = new ItemStack(this);
+            if(stackFull.hasCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING)) {
+                IEnergyStorage battery = stackFull.getCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING);
+                if(battery != null) {
+                    battery.receiveEnergy(battery.getMaxEnergyStored(), false);
+                    list.add(stackFull);
+                }
+            }
+        }
+        super.getSubItems(tabs, list);
+    }
+
+    @Nullable
+    @Override
+    public NBTTagCompound getNBTShareTag(ItemStack stack) {
+        stack.setTagInfo("sync_elytra_energy", new NBTTagInt(getCurrentEnergyStored(stack))); //trick MC into sending the stack capabilities to the client!
+        return super.getNBTShareTag(stack);
+    }
+
+    @Override
+    public boolean isValidArmor(ItemStack stack, EntityEquipmentSlot armorType, Entity entity) {
+        return armorType == EntityEquipmentSlot.CHEST;
+    }
+
+    @Nullable
+    @Override
+    public EntityEquipmentSlot getEquipmentSlot(ItemStack stack) {
+        return EntityEquipmentSlot.CHEST;
+    }
+
+    /**
+     * used to set a custom texture
+     *
+     * @return {@code null} to use the default elytra texture
+     */
+    @Nullable
+    @Override
+    public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type) {
+        //TODO get some sick ass vanity textures
+        //return stack.hasTagCompound() && stack.getTagCompound().getInteger(ELYTRA_SKIN.toString()) this.texture;
+        return this.texture;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Nullable
+    @Override
+    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default) {
+        return super.getArmorModel(entityLiving, itemStack, armorSlot, _default);
+        //TODO add custom elytra model
     }
 
     @Override
@@ -199,60 +232,27 @@ public class ItemPowerElytra extends ItemSkin {
         return super.getDurabilityForDisplay(stack);
     }
 
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void showTooltip(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flag) {
-        super.showTooltip(stack, worldIn, tooltip, flag);
-        NumberFormat numberFormatter = NumberFormat.getInstance();
-        tooltip.add(TextFormatting.GRAY.toString() + I18n.format("tooltip.power_elytra.charge", numberFormatter.format(getCurrentEnergyStored(stack)), numberFormatter.format(getMaxEnergyStored(stack))));
-    }
-
-    @Override
-    public void showAdvancedTooltip(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
-        super.showAdvancedTooltip(stack, world, tooltip, flag);
-        NumberFormat numberFormatter = NumberFormat.getInstance();
-        tooltip.add(TextFormatting.GRAY.toString() + I18n.format("tooltip.power_elytra.usageTick", numberFormatter.format(getTickConsumption(stack))));
-        tooltip.add(TextFormatting.GRAY.toString() + I18n.format("tooltip.power_elytra.usageRocket", numberFormatter.format(getConsumptionPerRocket(stack))));
-        boolean rocketBoost = canUseRockets(null, stack);
-        boolean energyBoost = canUseRFBoost(null, stack);
-        tooltip.add(TextFormatting.GRAY.toString() + I18n.format("tooltip.power_elytra.canUseRocket", (rocketBoost ? TextFormatting.GREEN : TextFormatting.RED) + I18n.format("tooltip.power_elytra.boolean_" + String.valueOf(rocketBoost).toLowerCase(Locale.ROOT))));
-        tooltip.add(TextFormatting.GRAY.toString() + I18n.format("tooltip.power_elytra.canUseEnergyBoost", (energyBoost ? TextFormatting.GREEN : TextFormatting.RED) + I18n.format("tooltip.power_elytra.boolean_" + String.valueOf(energyBoost).toLowerCase(Locale.ROOT))));
-    }
-
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         return enchantment == Enchantments.EFFICIENCY || enchantment.type == EnumEnchantmentType.ARMOR_CHEST || enchantment.type == EnumEnchantmentType.BREAKABLE || enchantment.type == EnumEnchantmentType.WEARABLE || super.canApplyAtEnchantingTable(stack, enchantment);
     }
 
-    public boolean isUsableElytra(EntityPlayer player, ItemStack stack) {
-        if(player.isCreative()) return true;
-        else if(stack.hasCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING)) {
-            IEnergyStorage battery = stack.getCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING);
-            if(battery != null) {
-                int toConsume = this.getTickConsumption(stack);
-                return battery.canExtract() && battery.extractEnergy(toConsume, true) >= toConsume;
-            }
-        }
-        return false;
-    }
-
+    @Nullable
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
-        ItemStack itemstack = playerIn.getHeldItem(handIn);
-        if (playerIn.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty()) { //player is not wearing a chestpiece
-            playerIn.setItemStackToSlot(EntityEquipmentSlot.CHEST, itemstack.copy());
-            itemstack.setCount(0);
-            return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
+    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable NBTTagCompound nbt) {
+        return new CapabilityProviderSerializable<>(CapabilityEnergy.ENERGY, DEFAULT_FACING, new EnergyStorage(this.getCapacity()));
+    }
+
+    public int getCapacity() {
+        return this.capacity;
+    }
+
+    public int getCurrentEnergyStored(ItemStack stack) {
+        if(stack.hasCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING)) {
+            IEnergyStorage battery = stack.getCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING);
+            if(battery != null) return battery.getEnergyStored();
         }
-        return new ActionResult<>(EnumActionResult.FAIL, itemstack);
-    }
-
-    public boolean canUseRockets(@Nullable EntityPlayer player, ItemStack stack) {
-        return canUseRockets;
-    }
-
-    public boolean canUseRFBoost(@Nullable EntityPlayer player, ItemStack stack) {
-        return canUseRFBoost;
+        return 0;
     }
 
     @Override
