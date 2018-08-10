@@ -2,8 +2,7 @@
     "type": "forge:ore_shaped",
     "conditions": [
         {
-            "type": "elytra_config_toggle",
-            "property": "enableBasicElytraRecipe"
+            "type": "power_eyltra:config_toggle"
         },
         {
             "type": "minecraft:item_exists",

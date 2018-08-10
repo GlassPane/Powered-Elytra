@@ -14,7 +14,6 @@ import static com.github.upcraftlp.powerelytra.PoweredElytra.*;
 @Config(modid = MODID, name = "glasspanemods/PoweredElytra") //--> /config/glasspanemods/PoweredElytra.cfg
 public class PowerElytraConfig {
 
-    @SuppressWarnings("unused") //parsed via recipe conditions
     @Config.Name("Basic Elytra Recipe")
     @Config.Comment({"register a recipe for the default elytra", "can be used to disable the crafting recipe in favor of adding custom recipes via crafttweaker"})
     public static boolean enableBasicElytraRecipe = true;
