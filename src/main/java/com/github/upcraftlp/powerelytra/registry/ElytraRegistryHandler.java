@@ -33,7 +33,6 @@ public class ElytraRegistryHandler {
     @SubscribeEvent
     public static void onRegisterItems(RegistryEvent.Register<Item> event) {
 
-        //TODO check other config values!
         CUSTOM_CONFIGS.forEach(config -> GlassPaneAutomatedRegistry.register(new ItemPowerElytra(config.name, config.textureName, config.capacity, config.costPerFlightTick, config.costPerBoosterRocket, config.canUseRockets, config.canUseRFBoost), event.getRegistry()));
 
         //cleanup

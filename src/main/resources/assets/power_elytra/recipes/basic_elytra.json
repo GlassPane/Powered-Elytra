@@ -1,0 +1,35 @@
+{
+    "type": "forge:ore_shaped",
+    "conditions": [
+        {
+            "type": "elytra_config_toggle",
+            "property": "enableBasicElytraRecipe"
+        },
+        {
+            "type": "minecraft:item_exists",
+            "item": "power_elytra:basic_elytra"
+        }
+    ],
+    "pattern": [
+        "I I",
+        "IEI",
+        "R R"
+    ],
+    "key": {
+        "I": {
+            "type": "forge:ore_dict",
+            "ore": "ingotIron"
+        },
+        "E": {
+            "item": "minecraft:elytra"
+        },
+        "R": {
+            "type": "forge:ore_dict",
+            "ore": "dustRedstone"
+        }
+    },
+    "result": {
+        "item": "power_elytra:basic_elytra",
+        "data": 0
+    }
+}
