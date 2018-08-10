@@ -1,14 +1,23 @@
 {
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "items/elytra"
-    },
+    "parent": "item/elytra",
     "overrides": [
         {
             "predicate": {
                 "glasspane:custom_skin": 1
             },
-            "model": "item/golden_sword"
+            "model": "item/generated",
+            "textures": {
+                "layer0": "power_elytra:items/elytra_skins/manforged"
+            }
+        },
+        {
+            "predicate": {
+                "glasspane:custom_skin": 2
+            },
+            "model": "item/generated",
+            "textures": {
+                "layer0": "power_elytra:items/elytra_skins/team_rapture"
+            }
         }
     ]
 }
