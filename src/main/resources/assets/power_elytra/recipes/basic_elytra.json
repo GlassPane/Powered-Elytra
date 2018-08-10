@@ -2,7 +2,7 @@
     "type": "forge:ore_shaped",
     "conditions": [
         {
-            "type": "power_eyltra:config_toggle"
+            "type": "power_elytra:config_toggle"
         },
         {
             "type": "minecraft:item_exists",
