@@ -42,7 +42,8 @@ import java.util.Locale;
 
 public class ItemPowerElytra extends ItemSkin {
 
-    private static ResourceLocation ELYTRA_SKIN = new ResourceLocation(PoweredElytra.MODID, "elytra_skin");
+    public static final ResourceLocation SKIN_MANFORGED = new ResourceLocation("power_elytra_skin:manforged");
+    public static final ResourceLocation SKIN_TEAM_RAPTURE = new ResourceLocation("power_elytra_skin:team_rapture");
 
     @Nullable
     private final String texture;
@@ -252,5 +253,10 @@ public class ItemPowerElytra extends ItemSkin {
 
     public boolean canUseRFBoost(@Nullable EntityPlayer player, ItemStack stack) {
         return canUseRFBoost;
+    }
+
+    @Override
+    public String getSkinID() {
+        return "power_elytra_skin";
     }
 }

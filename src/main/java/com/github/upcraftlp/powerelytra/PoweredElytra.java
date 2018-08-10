@@ -11,7 +11,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
@@ -71,10 +70,6 @@ public class PoweredElytra {
         NetworkHandler.INSTANCE.registerMessage(PacketElytraBoostRocket.class, PacketElytraBoostRocket.class, NetworkHandler.getNextPacketID(), Side.SERVER);
         NetworkHandler.INSTANCE.registerMessage(PacketElytraStartFlying.class, PacketElytraStartFlying.class, NetworkHandler.getNextPacketID(), Side.SERVER);
         ElytraRegistryHandler.init(event);
-    }
-
-    @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
-        proxy.postInit(event);
+        proxy.preInit(event);
     }
 }

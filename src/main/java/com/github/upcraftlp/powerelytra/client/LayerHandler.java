@@ -1,6 +1,6 @@
 package com.github.upcraftlp.powerelytra.client;
 
-import com.github.upcraftlp.glasspane.api.event.RegisterRenderLayerEvent;
+import com.github.upcraftlp.glasspane.api.event.client.RegisterRenderLayerEvent;
 import com.github.upcraftlp.powerelytra.PoweredElytra;
 import com.github.upcraftlp.powerelytra.client.render.layer.LayerCapeElytraCustom;
 import com.github.upcraftlp.powerelytra.client.render.layer.LayerElytraCustom;
