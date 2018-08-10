@@ -1,5 +1,5 @@
 {
     "conditions": {
-        "power_elytra:config_toggle": "com.github.upcraftlp.powerelytra.config.ElytraCraftingCondition"
+        "config_toggle": "com.github.upcraftlp.powerelytra.config.ElytraCraftingCondition"
     }
 }
