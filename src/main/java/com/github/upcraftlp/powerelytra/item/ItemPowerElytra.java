@@ -1,11 +1,14 @@
 package com.github.upcraftlp.powerelytra.item;
 
 import com.github.upcraftlp.glasspane.api.capability.CapabilityProviderSerializable;
+import com.github.upcraftlp.glasspane.api.util.NBTUtil;
 import com.github.upcraftlp.glasspane.item.ItemSkin;
 import com.github.upcraftlp.powerelytra.PoweredElytra;
 import net.minecraft.block.BlockDispenser;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -20,7 +23,6 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
@@ -32,6 +34,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -44,6 +47,7 @@ public class ItemPowerElytra extends ItemSkin {
 
     public static final ResourceLocation SKIN_MANFORGED = new ResourceLocation("power_elytra_skin:manforged");
     public static final ResourceLocation SKIN_TEAM_RAPTURE = new ResourceLocation("power_elytra_skin:team_rapture");
+    public static final ResourceLocation SKIN_LADYSNAKE = new ResourceLocation("power_elytra_skin:ladysnake");
 
     @Nullable
     private final String texture;
@@ -71,6 +75,7 @@ public class ItemPowerElytra extends ItemSkin {
         this.setHasAdvancedTooltip(true);
         BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(this, ItemArmor.DISPENSER_BEHAVIOR);
         this.setCreativeTab(PoweredElytra.CREATIVE_TAB);
+        //this.addPropertyOverride(CUSTOM_SKIN, this.CUSTOM_SKIN_GETTER);
     }
 
     /**
@@ -173,12 +178,13 @@ public class ItemPowerElytra extends ItemSkin {
             }
         }
         super.getSubItems(tabs, list);
+        if(FMLCommonHandler.instance().getSide().isClient() && Minecraft.getMinecraft().player != null) list.forEach(stack -> this.setSelectedSkin(stack, Minecraft.getMinecraft().player));
     }
 
     @Nullable
     @Override
     public NBTTagCompound getNBTShareTag(ItemStack stack) {
-        stack.setTagInfo("sync_elytra_energy", new NBTTagInt(getCurrentEnergyStored(stack))); //trick MC into sending the stack capabilities to the client!
+        NBTUtil.getDefaultTagCompound(stack).setInteger("energy_sync", this.getCurrentEnergyStored(stack)); //trick MC into sending the stack capabilities to the client!
         return super.getNBTShareTag(stack);
     }
 
@@ -201,9 +207,11 @@ public class ItemPowerElytra extends ItemSkin {
     @Nullable
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type) {
-        //TODO get some sick ass vanity textures
-        //return stack.hasTagCompound() && stack.getTagCompound().getInteger(ELYTRA_SKIN.toString()) this.texture;
-        return this.texture;
+        if(slot == EntityEquipmentSlot.CHEST) {
+            ResourceLocation skin = this.getSkin(stack, entity.getEntityWorld(), entity);
+            return skin != null ? (PoweredElytra.MODID + ":textures/entity/" + skin.getNamespace() + "/" + skin.getPath() + ".png") : this.texture;
+        }
+        return null;
     }
 
     @SideOnly(Side.CLIENT)
@@ -258,5 +266,19 @@ public class ItemPowerElytra extends ItemSkin {
     @Override
     public String getSkinID() {
         return "power_elytra_skin";
+    }
+
+    @Override
+    public ModelResourceLocation getCustomModelName(String variant) {
+        return new ModelResourceLocation(new ResourceLocation(PoweredElytra.MODID, "elytra_" + variant), "inventory");
+    }
+
+    @Override
+    public String[] getCustomModelNames() {
+        return new String[]{
+                SKIN_MANFORGED.getPath(),
+                SKIN_TEAM_RAPTURE.getPath(),
+                SKIN_LADYSNAKE.getPath()
+        };
     }
 }

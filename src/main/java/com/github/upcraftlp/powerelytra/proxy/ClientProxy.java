@@ -15,5 +15,6 @@ public class ClientProxy implements IProxy {
     public void preInit(FMLPreInitializationEvent event) {
         SkinnableMapping.addMapping(ItemPowerElytra.SKIN_MANFORGED, 1);
         SkinnableMapping.addMapping(ItemPowerElytra.SKIN_TEAM_RAPTURE, 2);
+        SkinnableMapping.addMapping(ItemPowerElytra.SKIN_LADYSNAKE, 3);
     }
 }
