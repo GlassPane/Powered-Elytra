@@ -1,11 +1,11 @@
 package com.github.upcraftlp.powerelytra.item;
 
+import com.github.upcraftlp.glasspane.GlassPane;
 import com.github.upcraftlp.glasspane.api.capability.CapabilityProviderSerializable;
 import com.github.upcraftlp.glasspane.api.util.NBTUtil;
 import com.github.upcraftlp.glasspane.item.ItemSkin;
 import com.github.upcraftlp.powerelytra.PoweredElytra;
 import net.minecraft.block.BlockDispenser;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -34,7 +34,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -75,7 +75,6 @@ public class ItemPowerElytra extends ItemSkin {
         this.setHasAdvancedTooltip(true);
         BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(this, ItemArmor.DISPENSER_BEHAVIOR);
         this.setCreativeTab(PoweredElytra.CREATIVE_TAB);
-        //this.addPropertyOverride(CUSTOM_SKIN, this.CUSTOM_SKIN_GETTER);
     }
 
     /**
@@ -94,14 +93,6 @@ public class ItemPowerElytra extends ItemSkin {
         super.showTooltip(stack, worldIn, tooltip, flag);
         NumberFormat numberFormatter = NumberFormat.getInstance();
         tooltip.add(TextFormatting.GRAY.toString() + I18n.format("tooltip.power_elytra.charge", numberFormatter.format(getCurrentEnergyStored(stack)), numberFormatter.format(getMaxEnergyStored(stack))));
-    }
-
-    public int getMaxEnergyStored(ItemStack stack) {
-        if(stack.hasCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING)) {
-            IEnergyStorage battery = stack.getCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING);
-            if(battery != null) return battery.getMaxEnergyStored();
-        }
-        return this.getCapacity();
     }
 
     @Override
@@ -135,6 +126,26 @@ public class ItemPowerElytra extends ItemSkin {
 
     public boolean canUseRFBoost(@Nullable EntityPlayer player, ItemStack stack) {
         return canUseRFBoost;
+    }
+
+    public int getCurrentEnergyStored(ItemStack stack) {
+        if(stack.hasCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING)) {
+            IEnergyStorage battery = stack.getCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING);
+            if(battery != null) return battery.getEnergyStored();
+        }
+        return 0;
+    }
+
+    public int getMaxEnergyStored(ItemStack stack) {
+        if(stack.hasCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING)) {
+            IEnergyStorage battery = stack.getCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING);
+            if(battery != null) return battery.getMaxEnergyStored();
+        }
+        return this.getCapacity();
+    }
+
+    public int getCapacity() {
+        return this.capacity;
     }
 
     public boolean isUsableElytra(EntityPlayer player, ItemStack stack) {
@@ -178,14 +189,11 @@ public class ItemPowerElytra extends ItemSkin {
             }
         }
         super.getSubItems(tabs, list);
-        if(FMLCommonHandler.instance().getSide().isClient() && Minecraft.getMinecraft().player != null) list.forEach(stack -> this.setSelectedSkin(stack, Minecraft.getMinecraft().player));
-    }
-
-    @Nullable
-    @Override
-    public NBTTagCompound getNBTShareTag(ItemStack stack) {
-        NBTUtil.getDefaultTagCompound(stack).setInteger("energy_sync", this.getCurrentEnergyStored(stack)); //trick MC into sending the stack capabilities to the client!
-        return super.getNBTShareTag(stack);
+        if(GlassPane.proxy.getClientPlayer() != null) {
+            for(ItemStack stack : list) {
+                this.setSelectedSkin(stack, GlassPane.proxy.getClientPlayer());
+            }
+        }
     }
 
     @Override
@@ -247,20 +255,26 @@ public class ItemPowerElytra extends ItemSkin {
 
     @Nullable
     @Override
+    public NBTTagCompound getNBTShareTag(ItemStack stack) {
+        NBTUtil.getDefaultTagCompound(stack).setInteger("energy_sync", this.getCurrentEnergyStored(stack));
+        return super.getNBTShareTag(stack);
+    }
+
+    @Override
+    public void readNBTShareTag(ItemStack stack, @Nullable NBTTagCompound nbt) {
+        if(nbt != null) {
+            IEnergyStorage battery = stack.getCapability(CapabilityEnergy.ENERGY, null);
+            if(battery instanceof EnergyStorage) {
+                ReflectionHelper.setPrivateValue(EnergyStorage.class, (EnergyStorage) battery, nbt.getCompoundTag(GlassPane.MODID).getInteger("energy_sync"), "energy");
+            }
+        }
+        super.readNBTShareTag(stack, nbt);
+    }
+
+    @Nullable
+    @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable NBTTagCompound nbt) {
         return new CapabilityProviderSerializable<>(CapabilityEnergy.ENERGY, DEFAULT_FACING, new EnergyStorage(this.getCapacity()));
-    }
-
-    public int getCapacity() {
-        return this.capacity;
-    }
-
-    public int getCurrentEnergyStored(ItemStack stack) {
-        if(stack.hasCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING)) {
-            IEnergyStorage battery = stack.getCapability(CapabilityEnergy.ENERGY, DEFAULT_FACING);
-            if(battery != null) return battery.getEnergyStored();
-        }
-        return 0;
     }
 
     @Override
@@ -281,4 +295,5 @@ public class ItemPowerElytra extends ItemSkin {
                 SKIN_LADYSNAKE.getPath()
         };
     }
+
 }
