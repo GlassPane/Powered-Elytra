@@ -15,3 +15,6 @@ tooltip.power_elytra.canUseEnergyBoost=Can use Energy to boost\: %s
 
 #Items
 item.power_elytra.creative_elytra.name=Creative Elytra
+
+#Skins
+glasspane.skin.power_elytra_skin=Elytra Skin
