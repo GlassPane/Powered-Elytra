@@ -94,7 +94,7 @@ minecraft {
 	}
     
     mappings = project.forge_mappings
-    if("${mappings}" != "${project.ext.mappings}") {
+    if("${mappings}" != "${project.ext.mappings}" && "${mappings}".startsWith("snapshot_")) {
         println(String.format("You are on old mappings, latest mappings are %s (you are on %s)", project.ext.mappings, mappings))
     }
     makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
