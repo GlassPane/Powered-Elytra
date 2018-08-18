@@ -227,20 +227,20 @@ if (JavaVersion.current().isJava8Compatible()) {
 
 dependencies {
 
-    compile "com.github.UpcraftLP:GlassPane:1.12.2-0.+"
+    compile "com.github.GlassPane:GlassPane:1.0.0"
 }
 if(project.hasProperty("api_package")) tasks.build.dependsOn signApiJar
 tasks.build.dependsOn signJar, signJavadocJar
 tasks.curseforge.dependsOn build
 
 artifacts {
-    archives apiJar
+    //archives apiJar
     archives javadocJar
 }
 
 def curseRelations = {
     //requiredLibrary '' //add curseforge-slug here
-    optionalLibrary 'craftdev-core'
+    requiredLibrary 'glasspane'
 }
 
 
@@ -259,7 +259,7 @@ curseforge {
 
             addArtifact javadocJar
             //addArtifact sourceJar
-            addArtifact apiJar
+            //addArtifact apiJar
 
             //addGameVersion '1.12'
             //addGameVersion '1.12.1'

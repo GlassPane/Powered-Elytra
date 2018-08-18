@@ -1,6 +1,6 @@
 package com.github.upcraftlp.powerelytra.proxy;
 
-import com.github.upcraftlp.glasspane.api.client.SkinnableMapping;
+import com.github.upcraftlp.glasspane.vanity.SkinnableMapping;
 import com.github.upcraftlp.glasspane.api.proxy.IProxy;
 import com.github.upcraftlp.powerelytra.item.ItemPowerElytra;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
