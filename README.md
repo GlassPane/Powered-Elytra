@@ -8,3 +8,5 @@ Download latest:
 
 All Downloads:
 [![Files](https://curse.nikky.moe/api/img/296787/files?logo)](https://minecraft.curseforge.com/projects/296787/files)
+
+[![Release](https://jitpack.io/v/Glasspane/Glasspane.svg)](https://jitpack.io/#Glasspane/Powered-Elytra)
