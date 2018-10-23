@@ -1,0 +1,20 @@
+#PARSE_ESCAPES
+
+#CreativeTabs
+itemGroup.power_elytra.name=パワードエリトラ
+
+#Tooltips
+tooltip.power_elytra.elytra_creative=ブースト限定はなくて無限に飛べる！
+tooltip.power_elytra.usageRocket=ロケット花火あたりのＦＥ消費量： %s
+tooltip.power_elytra.usageTick=チックあたりのＦＥ消費量： %s
+tooltip.power_elytra.charge=%s/%s ＦＥ
+tooltip.power_elytra.boolean_true=真
+tooltip.power_elytra.boolean_false=偽
+tooltip.power_elytra.canUseRocket=花火でブーストできる： %s
+tooltip.power_elytra.canUseEnergyBoost=エネルギーでブーストできる： %s
+
+#Items
+item.power_elytra.creative_elytra.name=クリエイティブエリトラ
+
+#Skins
+glasspane.skin.power_elytra_skin=エリトラスキン
